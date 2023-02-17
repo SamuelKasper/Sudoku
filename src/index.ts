@@ -42,7 +42,11 @@ function init() {
             let tile = document.createElement("div");
             tile.id = r.toString() + c.toString();
             tile.innerText = grid[r][c].toString();
-            tile.classList.add("tile");
+            if(tile.innerText=="0"){
+                tile.classList.add("tileEmpty");
+            }else{
+                tile.classList.add("tile");
+            }
             tile.addEventListener("click",selectTile)
             if (gameArea != null)
                 gameArea.append(tile);
@@ -71,6 +75,7 @@ function selectTile(){
     }
 }
 
+// Check if number (n) is possible at specific place (y,x)
 function possible(y:number, x:number, n:number) {
     for (let i = 0; i < 9; i++) {
         if (grid[y][i] == n) {
@@ -88,12 +93,13 @@ function possible(y:number, x:number, n:number) {
         for (let j = 0; j < 3; j++) {
             if (grid[y0 + i][x0 + j] == n) {
                 return false;
-            }
+            } 
         }
     }
     return true;
 }
 
+// Solve puzzle by backtracking
 function solve() {
     for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
