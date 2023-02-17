@@ -2,29 +2,57 @@ window.onload = function () {
     init();
 }
 
-/*let grid = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]];*/
-
 let grid = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]];
+
+/*let grid = [
     [1, 2, 3, 4, 5, 6, 7, 8, 9],
     [4, 5, 6, 7, 8, 9, 1, 2, 3],
     [7, 8, 9, 1, 2, 3, 4, 5, 6],
-    [2, 0, 0, 3, 6, 5, 8, 9, 7],
-    [3, 6, 0, 8, 9, 1, 2, 4, 5],
-    [5, 0, 0, 0, 4, 7, 3, 6, 1],
-    [6, 0, 0, 0, 0, 0, 0, 0, 0],
-    [8, 7, 0, 0, 3, 0, 0, 1, 0],
-    [9, 0, 0, 0, 0, 0, 0, 0, 0]];
+    [2, 1, 4, 3, 6, 5, 8, 9, 7],
+    [3, 6, 7, 8, 9, 1, 2, 4, 5],
+    [5, 9, 8, 2, 4, 7, 3, 6, 1],
+    [6, 3, 2, 5, 1, 4, 0, 0, 0],
+    [8, 7, 5, 9, 3, 2, 0, 0, 0],
+    [9, 4, 1, 6, 7, 8, 0, 0, 0]];*/
+
+/*let grid = [
+    [1, 0, 0, 4, 0, 0, 7, 8, 9],
+    [4, 0, 6, 0, 0, 0, 1, 0, 3],
+    [0, 8, 9, 1, 0, 3, 0, 0, 6],
+    [2, 1, 0, 3, 6, 0, 0, 0, 7], 
+    [3, 0, 0, 8, 0, 1, 2, 4, 0], 
+    [0, 9, 8, 0, 4, 0, 3, 6, 1],
+    [6, 0, 2, 5, 0, 4, 0, 0, 0],
+    [0, 0, 5, 0, 0, 2, 6, 0, 0],
+    [0, 4, 1, 6, 0, 8, 5, 0, 0]];*/
 
 function init() {
+    // Generate Grid
+    let amountNumbers = 40; 
+    for(let i = 0;i<amountNumbers;i++){
+        let nr = Math.floor((Math.random()*9)+1);
+        let x = Math.floor((Math.random()*9));
+        let y = Math.floor((Math.random()*9));
+        if(grid[y][x] == 0){
+            if(possible(y,x,nr)){
+                grid[y][x] = nr;
+            }else{
+                i--;
+            }
+        }else{
+            i--;
+        }
+    }
+
     // Create number panel
     for (let i = 1;i<=9;i++){
         let number = document.createElement("div");
@@ -44,6 +72,7 @@ function init() {
             tile.innerText = grid[r][c].toString();
             if(tile.innerText=="0"){
                 tile.classList.add("tileEmpty");
+                tile.innerText = "";
             }else{
                 tile.classList.add("tile");
             }
@@ -70,8 +99,8 @@ function selectNr(){
 
 // Put selected number into the board
 function selectTile(){
-    if(selection){
-        if(this.innerText != "0"){
+    if(selection){ 
+        if(this.innerText != ""){
             return;
         }
         this.innerText = selection.id;
@@ -82,7 +111,7 @@ function selectTile(){
 // Check if number (n) is possible at specific place (y,x)
 function possible(y:number, x:number, n:number) {
     for (let i = 0; i < 9; i++) {
-        if (grid[y][i] == n) {
+        if (grid[y][i] == n) { 
             return false;
         }
     }
@@ -97,7 +126,7 @@ function possible(y:number, x:number, n:number) {
         for (let j = 0; j < 3; j++) {
             if (grid[y0 + i][x0 + j] == n) {
                 return false;
-            } 
+            }
         }
     }
     return true;
@@ -105,6 +134,7 @@ function possible(y:number, x:number, n:number) {
 
 // Solve puzzle by backtracking
 function solve() {
+    console.log("solving")
     for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
             if (grid[y][x] == 0) {
@@ -114,12 +144,11 @@ function solve() {
                         solve();
                         grid[y][x] = 0;
                     }
-                }
-                return;
+                }return;
             }
         }
     }
-
+    
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             let tile = document.getElementById(r+""+c);
@@ -127,3 +156,5 @@ function solve() {
         }
     }
 }
+
+console.log("done");
