@@ -52,11 +52,13 @@ function init() {
                 gameArea.append(tile);
         }
     }
+    // Solve Button
+    let solveBtn = document.getElementById("solve");
+    solveBtn === null || solveBtn === void 0 ? void 0 : solveBtn.addEventListener("click", solve);
 }
 // Select number from number panel
 let selection;
 function selectNr() {
-    solve();
     if (selection != null) {
         selection.classList.remove("selection");
     }
@@ -66,7 +68,7 @@ function selectNr() {
 // Put selected number into the board
 function selectTile() {
     if (selection) {
-        if (this.innerText != "") {
+        if (this.innerText != "0") {
             return;
         }
         this.innerText = selection.id;
@@ -103,17 +105,18 @@ function solve() {
                 for (let n = 1; n <= 9; n++) {
                     if (possible(y, x, n)) {
                         grid[y][x] = n;
-                        // Show nr on board 
-                        let tile = document.getElementById(y + "" + x);
-                        tile.innerText = n.toString();
-                        tile.style.backgroundColor = "green";
-                        // End Show nr on board
                         solve();
                         grid[y][x] = 0;
                     }
                 }
                 return;
             }
+        }
+    }
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let tile = document.getElementById(r + "" + c);
+            tile.innerText = grid[r][c].toString();
         }
     }
 }

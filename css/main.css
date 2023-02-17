@@ -54,6 +54,19 @@ body{
     align-items: center;
 }
 
+#solve{
+    width: 446px;
+    height: 50px;
+    border: 2px solid rgb(0, 0, 0);
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    margin: 0 auto;
+    margin-top: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
 .selection{
     background-color: gray;
 }
