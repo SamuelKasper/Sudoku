@@ -2,18 +2,18 @@ window.onload = function () {
     init();
 }
 
-let grid = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]];
-
 /*let grid = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]];*/
+
+let grid = [
     [1, 2, 3, 4, 5, 6, 7, 8, 9],
     [4, 5, 6, 7, 8, 9, 1, 2, 3],
     [7, 8, 9, 1, 2, 3, 4, 5, 6],
@@ -22,28 +22,17 @@ let grid = [
     [5, 9, 8, 2, 4, 7, 3, 6, 1],
     [6, 3, 2, 5, 1, 4, 0, 0, 0],
     [8, 7, 5, 9, 3, 2, 0, 0, 0],
-    [9, 4, 1, 6, 7, 8, 0, 0, 0]];*/
-
-/*let grid = [
-    [1, 0, 0, 4, 0, 0, 7, 8, 9],
-    [4, 0, 6, 0, 0, 0, 1, 0, 3],
-    [0, 8, 9, 1, 0, 3, 0, 0, 6],
-    [2, 1, 0, 3, 6, 0, 0, 0, 7], 
-    [3, 0, 0, 8, 0, 1, 2, 4, 0], 
-    [0, 9, 8, 0, 4, 0, 3, 6, 1],
-    [6, 0, 2, 5, 0, 4, 0, 0, 0],
-    [0, 0, 5, 0, 0, 2, 6, 0, 0],
-    [0, 4, 1, 6, 0, 8, 5, 0, 0]];*/
+    [9, 4, 1, 6, 7, 8, 0, 0, 0]];
 
 function init() {
     // Generate Grid
-    let amountNumbers = 40; 
+    /*let amountNumbers = 20; 
     for(let i = 0;i<amountNumbers;i++){
         let nr = Math.floor((Math.random()*9)+1);
         let x = Math.floor((Math.random()*9));
         let y = Math.floor((Math.random()*9));
         if(grid[y][x] == 0){
-            if(possible(y,x,nr)){
+            if(isValid(y,x,nr)){
                 grid[y][x] = nr;
             }else{
                 i--;
@@ -51,7 +40,7 @@ function init() {
         }else{
             i--;
         }
-    }
+    }*/
 
     // Create number panel
     for (let i = 1;i<=9;i++){
@@ -109,7 +98,7 @@ function selectTile(){
 
 
 // Check if number (n) is possible at specific place (y,x)
-function possible(y:number, x:number, n:number) {
+/*function possible(y:number, x:number, n:number) {
     for (let i = 0; i < 9; i++) {
         if (grid[y][i] == n) { 
             return false;
@@ -130,6 +119,17 @@ function possible(y:number, x:number, n:number) {
         }
     }
     return true;
+}*/
+
+function isValid(row:number, col:number, k:number) {
+    for (let i = 0; i < 9; i++) {
+        const m = 3 * Math.floor(row / 3) + Math.floor(i / 3);
+        const n = 3 * Math.floor(col / 3) + i % 3;
+        if (grid[row][i] == k || grid[i][col] == k || grid[m][n] == k) {
+          return false;
+        }
+    }
+    return true;
 }
 
 // Solve puzzle by backtracking
@@ -139,7 +139,7 @@ function solve() {
         for (let x = 0; x < 9; x++) {
             if (grid[y][x] == 0) {
                 for (let n = 1; n <= 9; n++) {
-                    if (possible(y, x, n)) {
+                    if (isValid(y, x, n)) { //possible
                         grid[y][x] = n;
                         solve();
                         grid[y][x] = 0;
