@@ -44,7 +44,7 @@ function init() {
     }
     // Solve Button
     let solveBtn = document.getElementById("solve");
-    solveBtn === null || solveBtn === void 0 ? void 0 : solveBtn.addEventListener("click", solve);
+    solveBtn === null || solveBtn === void 0 ? void 0 : solveBtn.addEventListener("click", solveHandler);
     // Generate a new Sudoku
     generateSudoku();
 }
@@ -66,6 +66,7 @@ function selectTile() {
         this.innerText = selection.id;
     }
 }
+// generates new sudoku puzzle
 function generateSudoku() {
     // Generate Grid
     // Add random factor for generating a grid
@@ -127,6 +128,11 @@ function possible(y, x, n) {
     }
     return true;
 }
+// Calls function if solve button is pressed
+function solveHandler() {
+    solve();
+    printOnGrid();
+}
 // Solve puzzle by backtracking
 function solve() {
     for (let y = 0; y < 9; y++) {
@@ -150,6 +156,7 @@ function solve() {
         }
     }
 }
+// Checks if sudoku is solved
 function checkSolved() {
     let ans = true;
     for (let r = 0; r < 9; r++) {
