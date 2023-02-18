@@ -2,44 +2,18 @@
 window.onload = function () {
     init();
 };
-/*let grid = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]];*/
 let grid = [
-    [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    [4, 5, 6, 7, 8, 9, 1, 2, 3],
-    [7, 8, 9, 1, 2, 3, 4, 5, 6],
-    [2, 1, 4, 3, 6, 5, 8, 9, 7],
-    [3, 6, 7, 8, 9, 1, 2, 4, 5],
-    [5, 9, 8, 2, 4, 7, 3, 6, 1],
-    [6, 3, 2, 5, 1, 4, 0, 0, 0],
-    [8, 7, 5, 9, 3, 2, 0, 0, 0],
-    [9, 4, 1, 6, 7, 8, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 function init() {
-    // Generate Grid
-    /*let amountNumbers = 20;
-    for(let i = 0;i<amountNumbers;i++){
-        let nr = Math.floor((Math.random()*9)+1);
-        let x = Math.floor((Math.random()*9));
-        let y = Math.floor((Math.random()*9));
-        if(grid[y][x] == 0){
-            if(isValid(y,x,nr)){
-                grid[y][x] = nr;
-            }else{
-                i--;
-            }
-        }else{
-            i--;
-        }
-    }*/
     var _a;
     // Create number panel
     for (let i = 1; i <= 9; i++) {
@@ -59,7 +33,6 @@ function init() {
             tile.innerText = grid[r][c].toString();
             if (tile.innerText == "0") {
                 tile.classList.add("tileEmpty");
-                tile.innerText = "";
             }
             else {
                 tile.classList.add("tile");
@@ -72,6 +45,8 @@ function init() {
     // Solve Button
     let solveBtn = document.getElementById("solve");
     solveBtn === null || solveBtn === void 0 ? void 0 : solveBtn.addEventListener("click", solve);
+    // Generate a new Sudoku
+    generateSudoku();
 }
 // Select number from number panel
 let selection;
@@ -91,8 +66,46 @@ function selectTile() {
         this.innerText = selection.id;
     }
 }
+function generateSudoku() {
+    // Generate Grid
+    // Add random factor for generating a grid
+    for (let i = 0; i < 2; i++) {
+        let nr = Math.floor((Math.random() * 9) + 1);
+        let x = Math.floor((Math.random() * 9));
+        let y = Math.floor((Math.random() * 9));
+        // If position is empty and possible by rules set number
+        if (grid[y][x] == 0) {
+            if (possible(y, x, nr)) {
+                grid[y][x] = nr;
+            }
+            else {
+                i--;
+            }
+        }
+        else {
+            i--;
+        }
+    }
+    // Solve puzzle and save in variable
+    solve();
+    let solutionGrid = grid;
+    // Remove some of the tiles
+    for (let i = 0; i < 40; i++) {
+        let x = Math.floor((Math.random() * 9));
+        let y = Math.floor((Math.random() * 9));
+        // If position is empty and possible by rules set number
+        if (grid[y][x] != 0) {
+            grid[y][x] = 0;
+        }
+        else {
+            i--;
+        }
+    }
+    // Print on GUI
+    printOnGrid();
+}
 // Check if number (n) is possible at specific place (y,x)
-/*function possible(y:number, x:number, n:number) {
+function possible(y, x, n) {
     for (let i = 0; i < 9; i++) {
         if (grid[y][i] == n) {
             return false;
@@ -113,39 +126,54 @@ function selectTile() {
         }
     }
     return true;
-}*/
-function isValid(row, col, k) {
-    for (let i = 0; i < 9; i++) {
-        const m = 3 * Math.floor(row / 3) + Math.floor(i / 3);
-        const n = 3 * Math.floor(col / 3) + i % 3;
-        if (grid[row][i] == k || grid[i][col] == k || grid[m][n] == k) {
-            return false;
-        }
-    }
-    return true;
 }
 // Solve puzzle by backtracking
 function solve() {
-    console.log("solving");
     for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
+            // Search for emtpy position in grid
             if (grid[y][x] == 0) {
                 for (let n = 1; n <= 9; n++) {
-                    if (isValid(y, x, n)) { //possible
+                    if (possible(y, x, n)) {
                         grid[y][x] = n;
                         solve();
-                        grid[y][x] = 0;
+                        if (checkSolved()) {
+                            return grid;
+                        }
+                        else {
+                            grid[y][x] = 0;
+                        }
                     }
                 }
                 return;
             }
         }
     }
+}
+function checkSolved() {
+    let ans = true;
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            if (grid[r][c] == 0) {
+                ans = false;
+            }
+        }
+    }
+    return ans;
+}
+// Prints the grid variable on the GUI
+function printOnGrid() {
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             let tile = document.getElementById(r + "" + c);
             tile.innerText = grid[r][c].toString();
+            // replace zeros and color the rest
+            if (tile.innerText == "0") {
+                tile.innerText = "";
+            }
+            else {
+                tile.style.backgroundColor = "lightgray";
+            }
         }
     }
 }
-console.log("done");
