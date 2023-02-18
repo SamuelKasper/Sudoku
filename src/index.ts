@@ -70,7 +70,7 @@ function selectTile(){
     }
 }
 
-// generates new sudoku puzzle
+// Generates new sudoku puzzle
 function generateSudoku(){
     // Generate Grid
     // Add random factor for generating a grid
