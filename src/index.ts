@@ -2,6 +2,7 @@ window.onload = function () {
     init();
 }
 
+let mistakes = 0;
 let grid = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -31,12 +32,19 @@ function init() {
             let tile = document.createElement("div");
             tile.id = r.toString() + c.toString();
             tile.innerText = grid[r][c].toString();
+            tile.classList.add("tile");
             if(tile.innerText=="0"){
-                tile.classList.add("tileEmpty");
-            }else{
-                tile.classList.add("tile");
+                tile.style.backgroundColor = "white";
             }
-            tile.addEventListener("click",selectTile)
+            // Create border lines
+            if(r == 2 || r == 5){
+                tile.classList.add("horizLine");
+            }
+            if(c == 2 || c == 5){
+                tile.classList.add("vertLine");
+            }
+            // Add eventlistener
+            tile.addEventListener("click",setTile);
             if (gameArea != null)
                 gameArea.append(tile);
         }
@@ -52,7 +60,7 @@ function init() {
 
 // Select number from number panel
 let selection:HTMLDivElement;
-function selectNr(){
+function selectNr(this: HTMLDivElement){
     if(selection != null){
         selection.classList.remove("selection");
     }
@@ -61,12 +69,36 @@ function selectNr(){
 }
 
 // Put selected number into the board
-function selectTile(){
+function setTile(this: HTMLDivElement){
     if(selection){ 
-        if(this.innerText != ""){
+        // If field has white / no background, put or change number
+        if(this.style.backgroundColor == "white"){
+            // Put input into field
+            this.innerText = selection.id;
+            // Check if input is possible and color the wrong ones red
+            let y:number = parseInt(Array.from(this.id)[0]);
+            let x:number = parseInt(Array.from(this.id)[1]);
+            if(!(possible(y,x,parseInt(selection.id)))){
+                this.style.color = "red";
+                mistakes++;
+                document.getElementById("mistakes")!.innerText = "Fehler: " + mistakes;
+            }else{
+                this.style.color = "black";
+            }
+
+            // Put input to grid
+            grid[y][x] = parseInt(selection.id);
+
+            // Check if all fields are filled
+            if(emptyFieldsLeft()){
+                if(sudokuSolved()){
+                    document.getElementById("gamestate")!.innerText = "Status: gelöst";
+                }
+            }
+        }else{
             return;
         }
-        this.innerText = selection.id;
+        
     }
 }
 
@@ -91,7 +123,6 @@ function generateSudoku(){
     }
     // Solve puzzle and save in variable
     solve();
-    let solutionGrid = grid;
 
     // Remove some of the tiles
     for(let i = 0;i<40;i++){
@@ -149,7 +180,7 @@ function solve() {
                     if (possible(y, x, n)) { 
                         grid[y][x] = n;
                         solve();
-                        if(checkSolved()){
+                        if(emptyFieldsLeft()){
                             return grid;
                         }else{
                             grid[y][x] = 0;
@@ -161,8 +192,8 @@ function solve() {
     }
 }
 
-// Checks if sudoku is solved
-function checkSolved(){
+// Checks if there are empty fields
+function emptyFieldsLeft(){
     let ans = true;
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -184,8 +215,22 @@ function printOnGrid(){
             if(tile!.innerText == "0"){
                 tile!.innerText = "";
             }else{
-                tile!.style.backgroundColor = "lightgray"
+                tile!.style.backgroundColor = "whitesmoke";
             }
         }
     }
+}
+
+// Checks if sudoku is solved correctly
+function sudokuSolved(){
+    let solved = true;
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let tile = document.getElementById(r+""+c);
+            if(tile!.style.color == "red"){
+                solved = false;
+            }
+        }
+    }
+    return solved;
 }

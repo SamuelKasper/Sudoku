@@ -1,5 +1,20 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+h1{
+    margin-bottom: 0px;
+}
+
+#dashboard{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 50px;
+    width: 450px;
+    margin: 0 auto;
+    margin-bottom: 20px;
 }
 
 #gameArea{
@@ -11,21 +26,9 @@ body{
 }
 
 .tile{
-    width: 48px;
+    width: 47px;
     height: 48px;
-    border: 1px solid rgb(0, 0, 0);
-    background-color: rgb(214, 214, 214);
-    font-size: 20px;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.tileEmpty{
-    width: 48px;
-    height: 48px;
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid lightgray;
     font-size: 20px;
     font-weight: bold;
     display: flex;
@@ -36,9 +39,9 @@ body{
 #numbers{
     width: 450px;
     height: 50px;
-    background-color: rgb(214, 214, 214);
+    background-color: whitesmoke;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 40px;
     display: flex;
     flex-wrap: wrap;
 }
@@ -62,11 +65,19 @@ body{
     font-weight: bold;
     display: flex;
     margin: 0 auto;
-    margin-top: 5px;
+    margin-top: 10px;
     justify-content: center;
     align-items: center;
 }
 
 .selection{
-    background-color: gray;
+    background-color: lightgray;
+}
+
+.horizLine{
+    border-bottom: 2px solid black;
+}
+
+.vertLine{
+    border-right: 2px solid black;
 }
