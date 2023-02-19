@@ -157,10 +157,21 @@ function possible(y, x, n) {
     }
     return true;
 }
-// Calls function if solve button is pressed
+// Calls functions to solve the puzzle
 function solveHandler() {
+    // Remove possible wrong inputs
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            let tile = document.getElementById(r + "" + c);
+            if (tile.style.color == "red") {
+                tile.style.color = "black";
+                grid[r][c] = 0;
+            }
+        }
+    }
     solve();
     printOnGrid();
+    document.getElementById("gamestate").innerText = "Status: lösung anzeigen";
 }
 // Solve puzzle by backtracking
 function solve() {
