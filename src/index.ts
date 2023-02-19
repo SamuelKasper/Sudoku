@@ -22,7 +22,7 @@ function init() {
         number.innerText = i.toString();
         number.addEventListener("click", selectNr)
         number.classList.add("numbers");
-        document.getElementById("numbers")?.append(number)
+        document.getElementById("numberSpace")?.append(number)
     }
 
     // Create board
@@ -170,7 +170,7 @@ function solveHandler(){
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             let tile = document.getElementById(r+""+c);
-            if(tile!.style.color == "red"){
+            if(tile!.style.color == "red" || tile!.style.backgroundColor == "white"){
                 tile!.style.color = "black";
                 grid[r][c] = 0;
             }
