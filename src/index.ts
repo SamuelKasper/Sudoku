@@ -2,6 +2,8 @@ window.onload = function () {
     init();
 }
 
+// Globals
+let selection:HTMLDivElement;
 let mistakes = 0;
 let grid = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -59,7 +61,6 @@ function init() {
 }
 
 // Select number from number panel
-let selection:HTMLDivElement;
 function selectNr(this: HTMLDivElement){
     if(selection != null){
         selection.classList.remove("selection");
@@ -73,7 +74,7 @@ function setTile(this: HTMLDivElement){
     if(selection){ 
         // If field has white / no background, put or change number
         if(this.style.backgroundColor == "white"){
-            // Put input into field
+            // Put input into GUI
             this.innerText = selection.id;
             // Check if input is possible and color the wrong ones red
             let y:number = parseInt(Array.from(this.id)[0]);
@@ -86,10 +87,10 @@ function setTile(this: HTMLDivElement){
                 this.style.color = "black";
             }
 
-            // Put input to grid
+            // Put input also to grid
             grid[y][x] = parseInt(selection.id);
 
-            // Check if all fields are filled
+            // Check if all fields are filled and correct
             if(emptyFieldsLeft()){
                 if(sudokuSolved()){
                     document.getElementById("gamestate")!.innerText = "Status: gelöst";
@@ -124,7 +125,7 @@ function generateSudoku(){
     // Solve puzzle and save in variable
     solve();
 
-    // Remove some of the tiles
+    // Remove some of the tiles / set amound of missing tiles
     for(let i = 0;i<40;i++){
         let x = Math.floor((Math.random()*9));
         let y = Math.floor((Math.random()*9));
