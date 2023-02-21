@@ -72,8 +72,6 @@ function setTile() {
         if (this.style.backgroundColor == "white") {
             let y = parseInt(Array.from(this.id)[0]);
             let x = parseInt(Array.from(this.id)[1]);
-            // Empty the position in grid to prevent coloring issue
-            grid[y][x] = 0;
             // Check if input is possible and color the wrong ones red
             if (!(possible(y, x, parseInt(selection.id)))) {
                 this.style.color = "red";
@@ -86,6 +84,7 @@ function setTile() {
             // Set number to GUI and grid
             this.innerText = selection.id;
             grid[y][x] = parseInt(selection.id);
+            updateRedTiles();
             // Check if all fields are filled and correct
             if (emptyFieldsLeft()) {
                 if (sudokuSolved()) {
@@ -238,4 +237,27 @@ function sudokuSolved() {
         }
     }
     return solved;
+}
+// Checks the red tiles if they are valid and updates them
+function updateRedTiles() {
+    for (let y = 0; y < 9; y++) {
+        for (let x = 0; x < 9; x++) {
+            let tile = document.getElementById(y.toString() + x.toString());
+            if (tile.style.color == "red" && tile.style.backgroundColor == "white") {
+                // save number to variable
+                let numberToCheck = tile.innerText;
+                // remove number from grid, to check if the number would there be possible
+                grid[y][x] = 0;
+                // check if possible and set the number again with the correct color
+                if (possible(y, x, parseInt(numberToCheck))) {
+                    tile.style.color = "black";
+                    grid[y][x] = parseInt(numberToCheck);
+                }
+                else {
+                    tile.style.color = "red";
+                    grid[y][x] = parseInt(numberToCheck);
+                }
+            }
+        }
+    }
 }

@@ -3,7 +3,7 @@ window.onload = function () {
 }
 
 // Globals
-let selection:HTMLDivElement;
+let selection: HTMLDivElement;
 let mistakes = 0;
 let grid = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -16,9 +16,9 @@ let grid = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
-function init() {    
+function init() {
     // Create number panel
-    for (let i = 1;i<=9;i++){
+    for (let i = 1; i <= 9; i++) {
         let number = document.createElement("div");
         number.id = i.toString();
         number.innerText = i.toString();
@@ -35,18 +35,18 @@ function init() {
             tile.id = r.toString() + c.toString();
             tile.innerText = grid[r][c].toString();
             tile.classList.add("tile");
-            if(tile.innerText=="0"){
+            if (tile.innerText == "0") {
                 tile.style.backgroundColor = "white";
             }
             // Create border lines
-            if(r == 2 || r == 5){
+            if (r == 2 || r == 5) {
                 tile.classList.add("horizLine");
             }
-            if(c == 2 || c == 5){
+            if (c == 2 || c == 5) {
                 tile.classList.add("vertLine");
             }
             // Add eventlistener
-            tile.addEventListener("click",setTile);
+            tile.addEventListener("click", setTile);
             if (gameArea != null)
                 gameArea.append(tile);
         }
@@ -54,15 +54,15 @@ function init() {
 
     // Solve Button
     let solveBtn = document.getElementById("solve");
-    solveBtn?.addEventListener("click",solveHandler);
+    solveBtn?.addEventListener("click", solveHandler);
 
     // Generate a new Sudoku
     generateSudoku();
 }
 
 // Select number from number panel
-function selectNr(this: HTMLDivElement){
-    if(selection != null){
+function selectNr(this: HTMLDivElement) {
+    if (selection != null) {
         selection.classList.remove("selection");
     }
     selection = this;
@@ -70,14 +70,13 @@ function selectNr(this: HTMLDivElement){
 }
 
 // Put selected number into the board
-function setTile(this: HTMLDivElement){
-    if(selection){ 
+function setTile(this: HTMLDivElement) {
+    if (selection) {
         // If field has white / no background, put or change number
-        if(this.style.backgroundColor == "white"){
-            let y:number = parseInt(Array.from(this.id)[0]);
-            let x:number = parseInt(Array.from(this.id)[1]);
-            // Empty the position in grid to prevent coloring issue
-            grid[y][x] = 0;
+        if (this.style.backgroundColor == "white") {
+            let y: number = parseInt(Array.from(this.id)[0]);
+            let x: number = parseInt(Array.from(this.id)[1]);
+   
             // Check if input is possible and color the wrong ones red
             if(!(possible(y,x,parseInt(selection.id)))){
                 this.style.color = "red";
@@ -86,39 +85,41 @@ function setTile(this: HTMLDivElement){
             }else{
                 this.style.color = "black";
             }
+
             // Set number to GUI and grid
             this.innerText = selection.id;
             grid[y][x] = parseInt(selection.id);
+            updateRedTiles();
 
             // Check if all fields are filled and correct
-            if(emptyFieldsLeft()){
-                if(sudokuSolved()){
+            if (emptyFieldsLeft()) {
+                if (sudokuSolved()) {
                     document.getElementById("gamestate")!.innerText = "Status: gelöst";
                 }
             }
-        }else{
+        } else {
             return;
         }
-        
+
     }
 }
 
 // Generates new sudoku puzzle
-function generateSudoku(){
+function generateSudoku() {
     // Generate Grid
     // Add random factor for generating a grid
-    for(let i = 0;i<2;i++){
-        let nr = Math.floor((Math.random()*9)+1);
-        let x = Math.floor((Math.random()*9));
-        let y = Math.floor((Math.random()*9));
+    for (let i = 0; i < 2; i++) {
+        let nr = Math.floor((Math.random() * 9) + 1);
+        let x = Math.floor((Math.random() * 9));
+        let y = Math.floor((Math.random() * 9));
         // If position is empty and possible by rules set number
-        if(grid[y][x] == 0){
-            if(possible(y,x,nr)){
+        if (grid[y][x] == 0) {
+            if (possible(y, x, nr)) {
                 grid[y][x] = nr;
-            }else{
+            } else {
                 i--;
             }
-        }else{
+        } else {
             i--;
         }
     }
@@ -126,13 +127,13 @@ function generateSudoku(){
     solve();
 
     // Remove some of the tiles / set amound of missing tiles
-    for(let i = 0;i<40;i++){
-        let x = Math.floor((Math.random()*9));
-        let y = Math.floor((Math.random()*9));
+    for (let i = 0; i < 40; i++) {
+        let x = Math.floor((Math.random() * 9));
+        let y = Math.floor((Math.random() * 9));
         // If position is empty and possible by rules set number
-        if(grid[y][x] != 0){
+        if (grid[y][x] != 0) {
             grid[y][x] = 0;
-        }else{
+        } else {
             i--;
         }
     }
@@ -142,9 +143,9 @@ function generateSudoku(){
 }
 
 // Check if number (n) is possible at specific place (y,x)
-function possible(y:number, x:number, n:number) {
+function possible(y: number, x: number, n: number) {
     for (let i = 0; i < 9; i++) {
-        if (grid[y][i] == n) { 
+        if (grid[y][i] == n) {
             return false;
         }
     }
@@ -166,12 +167,12 @@ function possible(y:number, x:number, n:number) {
 }
 
 // Calls functions to solve the puzzle
-function solveHandler(){
+function solveHandler() {
     // Remove possible wrong inputs
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
-            let tile = document.getElementById(r+""+c);
-            if(tile!.style.backgroundColor == "white"){
+            let tile = document.getElementById(r + "" + c);
+            if (tile!.style.backgroundColor == "white") {
                 tile!.style.color = "black";
                 grid[r][c] = 0;
             }
@@ -179,7 +180,7 @@ function solveHandler(){
     }
     solve();
     printOnGrid();
-    document.getElementById("gamestate")!.innerText="Status: lösung anzeigen"
+    document.getElementById("gamestate")!.innerText = "Status: lösung anzeigen"
 }
 
 // Solve puzzle by backtracking
@@ -189,44 +190,44 @@ function solve() {
             // Search for emtpy position in grid
             if (grid[y][x] == 0) {
                 for (let n = 1; n <= 9; n++) {
-                    if (possible(y, x, n)) { 
+                    if (possible(y, x, n)) {
                         grid[y][x] = n;
                         solve();
-                        if(emptyFieldsLeft()){
+                        if (emptyFieldsLeft()) {
                             return grid;
-                        }else{
+                        } else {
                             grid[y][x] = 0;
                         }
                     }
-                }return;
+                } return;
             }
         }
     }
 }
 
 // Checks if there are empty fields
-function emptyFieldsLeft(){
+function emptyFieldsLeft() {
     let ans = true;
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
-            if(grid[r][c] == 0){
+            if (grid[r][c] == 0) {
                 ans = false;
             }
         }
-    } 
+    }
     return ans;
 }
 
 // Prints the grid variable on the GUI
-function printOnGrid(){
+function printOnGrid() {
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
-            let tile = document.getElementById(r+""+c);
+            let tile = document.getElementById(r + "" + c);
             tile!.innerText = grid[r][c].toString();
             // replace zeros and color the rest
-            if(tile!.innerText == "0"){
+            if (tile!.innerText == "0") {
                 tile!.innerText = "";
-            }else{
+            } else {
                 tile!.style.backgroundColor = "whitesmoke";
             }
         }
@@ -234,15 +235,38 @@ function printOnGrid(){
 }
 
 // Checks if sudoku is solved correctly
-function sudokuSolved(){
+function sudokuSolved() {
     let solved = true;
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
-            let tile = document.getElementById(r+""+c);
-            if(tile!.style.color == "red"){
+            let tile = document.getElementById(r + "" + c);
+            if (tile!.style.color == "red") {
                 solved = false;
             }
         }
     }
     return solved;
+}
+
+// Checks the red tiles if they are valid and updates them
+function updateRedTiles() {
+    for (let y = 0; y < 9; y++) {
+        for (let x = 0; x < 9; x++) {
+            let tile = document.getElementById(y.toString() + x.toString())
+            if (tile!.style.color == "red" && tile!.style.backgroundColor == "white") {
+                // save number to variable
+                let numberToCheck = tile!.innerText;
+                // remove number from grid, to check if the number would there be possible
+                grid[y][x] = 0;
+                // check if possible and set the number again with the correct color
+                if(possible(y,x,parseInt(numberToCheck))){
+                    tile!.style.color = "black";
+                    grid[y][x] = parseInt(numberToCheck);
+                }else{
+                    tile!.style.color = "red";
+                    grid[y][x] = parseInt(numberToCheck);
+                }
+            }
+        }
+    }
 }
