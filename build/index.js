@@ -16,8 +16,8 @@ let grid = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+// Create Sudoku board, numbers and solve button
 function init() {
-    var _a;
     // Create number panel
     for (let i = 1; i <= 9; i++) {
         let number = document.createElement("div");
@@ -25,7 +25,7 @@ function init() {
         number.innerText = i.toString();
         number.addEventListener("click", selectNr);
         number.classList.add("numbers");
-        (_a = document.getElementById("numberSpace")) === null || _a === void 0 ? void 0 : _a.append(number);
+        document.getElementById("numberSpace").append(number);
     }
     // Create board
     let gameArea = document.getElementById("gameArea");
@@ -35,6 +35,7 @@ function init() {
             tile.id = r.toString() + c.toString();
             tile.innerText = grid[r][c].toString();
             tile.classList.add("tile");
+            // Set background color for empty tiles
             if (tile.innerText == "0") {
                 tile.style.backgroundColor = "white";
             }
@@ -47,8 +48,7 @@ function init() {
             }
             // Add eventlistener
             tile.addEventListener("click", setTile);
-            if (gameArea != null)
-                gameArea.append(tile);
+            gameArea.append(tile);
         }
     }
     // Solve Button
@@ -65,7 +65,7 @@ function selectNr() {
     selection = this;
     selection.classList.add("selection");
 }
-// Put selected number into the board
+// Put selected number to GUI
 function setTile() {
     if (selection) {
         // If field has white / no background, put or change number
@@ -84,8 +84,9 @@ function setTile() {
             // Set number to GUI and grid
             this.innerText = selection.id;
             grid[y][x] = parseInt(selection.id);
+            // Update the red tiles
             updateRedTiles();
-            // Check if all fields are filled and correct
+            // Check if game is over
             if (emptyFieldsLeft()) {
                 if (sudokuSolved()) {
                     document.getElementById("gamestate").innerText = "Status: gelöst";
@@ -93,6 +94,7 @@ function setTile() {
             }
         }
         else {
+            // No number is selected
             return;
         }
     }
@@ -137,16 +139,13 @@ function generateSudoku() {
 }
 // Check if number (n) is possible at specific place (y,x)
 function possible(y, x, n) {
+    // Check row and column
     for (let i = 0; i < 9; i++) {
-        if (grid[y][i] == n) {
+        if (grid[y][i] == n || grid[i][x] == n) {
             return false;
         }
     }
-    for (let i = 0; i < 9; i++) {
-        if (grid[i][x] == n) {
-            return false;
-        }
-    }
+    // Check square
     let x0 = Math.floor(x / 3) * 3;
     let y0 = Math.floor(y / 3) * 3;
     for (let i = 0; i < 3; i++) {
@@ -181,6 +180,7 @@ function solve() {
             // Search for emtpy position in grid
             if (grid[y][x] == 0) {
                 for (let n = 1; n <= 9; n++) {
+                    // Check if number is possible at (y,x) and set it
                     if (possible(y, x, n)) {
                         grid[y][x] = n;
                         solve();
