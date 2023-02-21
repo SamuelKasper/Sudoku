@@ -74,11 +74,11 @@ function setTile(this: HTMLDivElement){
     if(selection){ 
         // If field has white / no background, put or change number
         if(this.style.backgroundColor == "white"){
-            // Put input into GUI
-            this.innerText = selection.id;
-            // Check if input is possible and color the wrong ones red
             let y:number = parseInt(Array.from(this.id)[0]);
             let x:number = parseInt(Array.from(this.id)[1]);
+            // Empty the position in grid to prevent coloring issue
+            grid[y][x] = 0;
+            // Check if input is possible and color the wrong ones red
             if(!(possible(y,x,parseInt(selection.id)))){
                 this.style.color = "red";
                 mistakes++;
@@ -86,8 +86,8 @@ function setTile(this: HTMLDivElement){
             }else{
                 this.style.color = "black";
             }
-
-            // Put input also to grid
+            // Set number to GUI and grid
+            this.innerText = selection.id;
             grid[y][x] = parseInt(selection.id);
 
             // Check if all fields are filled and correct
@@ -171,7 +171,7 @@ function solveHandler(){
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             let tile = document.getElementById(r+""+c);
-            if(tile!.style.color == "red" || tile!.style.backgroundColor == "white"){
+            if(tile!.style.backgroundColor == "white"){
                 tile!.style.color = "black";
                 grid[r][c] = 0;
             }
